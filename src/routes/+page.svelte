@@ -70,7 +70,7 @@
 	let startpoint = undefined;
 	let endpoint = [0, 0];
 	let curr = [0, 0];
-	let totalFrames = 186;
+	let totalFrames = 185.8;
 	let fx = (thisFrame) => {
 		return startpoint[X] + (endpoint[X] - startpoint[X]) * (thisFrame / totalFrames);
 	};
@@ -88,36 +88,39 @@
 			startpoint = [canvas.width / 2, canvas.height / 2];
 		}
 		interval = setInterval(() => {
-			if (frame % Math.floor(totalFrames / 16) == 0) {
-				if (ranBeat == currBeat) {
-					ctx.globalCompositeOperation = compsValues[
-						Math.floor(Math.random() * compsValues.length)
-					] as GlobalCompositeOperation;
-					nextBeat = (nextBeat + 3) % 8;
-					// currBeat = -1;
-					// ranBeat = Math.ceil(Math.random() * 8);
-				}
-				console.log(ctx.globalCompositeOperation);
-				console.log(currBeat, ranBeat);
-				currBeat++;
-			}
-			if (frame == 0) {
+			// if (frame % Math.floor(totalFrames / 16) == 0) {
+			// 	if (ranBeat == currBeat) {
+			// 		ctx.globalCompositeOperation = compsValues[
+			// 			Math.floor(Math.random() * compsValues.length)
+			// 		] as GlobalCompositeOperation;
+			// 		nextBeat = (nextBeat + 3) % 8;
+			// 		// currBeat = -1;
+			// 		// ranBeat = Math.ceil(Math.random() * 8);
+			// 	}
+			// 	console.log(ctx.globalCompositeOperation);
+			// 	console.log(currBeat, ranBeat);
+			// 	currBeat++;
+			// }
+			// if (frame % totalFrames > 1) {
+			if (frame % totalFrames > 150) {
 				// new endpoint if frame is 0 (just starting again)
 				endpoint = [
 					Math.floor(Math.random() * xBound) + xBoundOffset,
 					Math.floor(Math.random() * yBound) + yBoundOffset
 				];
 			}
-			curr = [fx(frame), fy(frame)];
+			curr = [fx(frame % totalFrames), fy(frame % totalFrames)];
 			// drawPath(curr[X], curr[Y]);
 			draw(curr[X], curr[Y]);
-			// if (frame == Math.floor(Math.random() * 200)) {
-			//     ctx.globalCompositeOperation = compsValues[Math.floor(Math.random() * compsValues.length)];
-			// }
+			if ((frame % totalFrames) - Math.floor(Math.random() * 200) < 1) {
+				ctx.globalCompositeOperation = compsValues[
+					Math.floor(Math.random() * compsValues.length)
+				] as GlobalCompositeOperation;
+			}
 			frame++;
-			if (frame == totalFrames) {
+			if (frame % totalFrames < 1) {
 				startpoint = endpoint;
-				frame = 0;
+				// frame = 0;
 				interval = clearInterval(interval);
 				console.log('Last: ', Math.abs(lastLoop - (new Date() as any)));
 				lastLoop = new Date();
@@ -154,17 +157,14 @@
 		}
 	}
 	let introTimeOut;
-	function handleSoftBegin() {
+	function handleBegin() {
 		music = new Audio('redboneedited.opus');
 		music.play();
 		whenSongBegan = new Date();
-		// start timing since song began
-	}
-	function handleBegin() {
 		hasBegun = true;
 		setTimeout(() => {
 			loop();
-		}, introLength - ((new Date() as any) - whenSongBegan));
+		}, introLength);
 		// wait until music is at a certain point, then loop.
 	}
 	function handleExit() {
@@ -174,17 +174,12 @@
 	}
 </script>
 
-<svelte:window bind:innerWidth on:mouseup={() => {}} on:mousedown={() => {}} />
+<svelte:window bind:innerWidth />
 
 <main>
 	{#if !hasBegun}
 		<div class="beginExperienceContainer">
-			<button
-				class="beginExperience"
-				on:mouseenter={handleSoftBegin}
-				on:mouseleave={handleExit}
-				on:click={handleBegin}>Begin experience</button
-			>
+			<button class="beginExperience" on:click={handleBegin}>Begin experience</button>
 		</div>
 	{/if}
 	<canvas bind:this={canvas} class="canvas-thing" />
@@ -196,17 +191,6 @@
 		padding: 0;
 		margin: 0;
 	}
-	main {
-		text-align: center;
-		padding: 0em;
-		max-width: 240px;
-		margin: 0 auto;
-	}
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
 	.beginExperienceContainer {
 		display: flex;
 		align-items: center;
@@ -217,30 +201,4 @@
 	.beginExperience {
 		padding: 10px;
 	}
-	/* article {
-		position: absolute;
-		top: 0;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		color: white;
-		text-align: justify;
-	}
-	section {
-		width: 50%;
-		padding: 5%;
-		margin: 5% auto;
-		border-radius: 40px;
-	}
-	h1 {
-		text-align: center;
-		margin: 3%;
-		color: black;
-	p {
-		padding: 10px;
-	}
-	.score {
-		position: absolute;
-	}
-	} */
 </style>
