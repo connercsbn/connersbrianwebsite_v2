@@ -14,6 +14,7 @@
 	let music: HTMLAudioElement;
 	let introLength = 7450;
 	let whenSongBegan = undefined;
+	let movementSpeed = 450;
 	// bpm is 96.484;
 	// roughly 1860 frames per bar
 	// 465 frames per beat if 10ms apart
@@ -127,7 +128,7 @@
 				loop();
 			}
 			// start position x at 0; then increment each draw to calculate position
-		}, 10);
+		}, movementSpeed);
 	}
 
 	function drawPath(x, y) {
@@ -182,6 +183,7 @@
 			<button class="beginExperience" on:click={handleBegin}>Begin experience</button>
 		</div>
 	{/if}
+	<input type="range" bind:value={movementSpeed} step="25" min={0} max={1000} />{movementSpeed}
 	<canvas bind:this={canvas} class="canvas-thing" />
 </main>
 
