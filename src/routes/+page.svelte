@@ -34,11 +34,11 @@
 		'2': 'color',
 		'3': 'saturation',
 		'4': 'hue',
-		'5': 'exclusion',
-		'6': 'difference',
-		'7': 'soft-light',
-		'8': 'hard-light',
-		'9': 'color-burn',
+		// '5': 'exclusion',
+		// '6': 'difference',
+		// '7': 'soft-light',
+		// '8': 'hard-light',
+		// '9': 'color-burn',
 		'0': 'lighten',
 		q: 'darken',
 		w: 'overlay',
@@ -102,7 +102,7 @@
 			// 	currBeat++;
 			// }
 			// if (frame % totalFrames > 1) {
-			if (frame % totalFrames > 150) {
+			if (frame % totalFrames > 1) {
 				// new endpoint if frame is 0 (just starting again)
 				endpoint = [
 					Math.floor(Math.random() * xBound) + xBoundOffset,
