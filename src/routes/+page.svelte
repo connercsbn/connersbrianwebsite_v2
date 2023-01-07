@@ -8,16 +8,14 @@
 	let canvas: HTMLCanvasElement;
 	let brian: HTMLImageElement;
 	let ctx: CanvasRenderingContext2D;
-	let x, y;
 	let comp: GlobalCompositeOperation;
 	let hasBegun = false;
 	let music: HTMLAudioElement;
 	let introLength = 7450;
-	let whenSongBegan = undefined;
-	let movementSpeed = 450;
 	// bpm is 96.484;
 	// roughly 1860 frames per bar
 	// 465 frames per beat if 10ms apart
+	let totalFrames = 185.9;
 	let lastLoop = undefined;
 	$: {
 		if (ctx) {
@@ -71,7 +69,6 @@
 	let startpoint = undefined;
 	let endpoint = [0, 0];
 	let curr = [0, 0];
-	let totalFrames = 185.8;
 	let fx = (thisFrame) => {
 		return startpoint[X] + (endpoint[X] - startpoint[X]) * (thisFrame / totalFrames);
 	};
@@ -103,7 +100,7 @@
 			// 	currBeat++;
 			// }
 			// if (frame % totalFrames > 1) {
-			if (frame % totalFrames > 1) {
+			if (frame % totalFrames < 1) {
 				// new endpoint if frame is 0 (just starting again)
 				endpoint = [
 					Math.floor(Math.random() * xBound) + xBoundOffset,
@@ -113,7 +110,7 @@
 			curr = [fx(frame % totalFrames), fy(frame % totalFrames)];
 			// drawPath(curr[X], curr[Y]);
 			draw(curr[X], curr[Y]);
-			if ((frame % totalFrames) - Math.floor(Math.random() * 200) < 1) {
+			if ((frame % totalFrames) + Math.floor(Math.random() * 200) < 1) {
 				ctx.globalCompositeOperation = compsValues[
 					Math.floor(Math.random() * compsValues.length)
 				] as GlobalCompositeOperation;
@@ -128,7 +125,7 @@
 				loop();
 			}
 			// start position x at 0; then increment each draw to calculate position
-		}, movementSpeed);
+		}, 10);
 	}
 
 	function drawPath(x, y) {
@@ -161,7 +158,6 @@
 	function handleBegin() {
 		music = new Audio('redboneedited.opus');
 		music.play();
-		whenSongBegan = new Date();
 		hasBegun = true;
 		setTimeout(() => {
 			loop();
@@ -183,7 +179,7 @@
 			<button class="beginExperience" on:click={handleBegin}>Begin experience</button>
 		</div>
 	{/if}
-	<input type="range" bind:value={movementSpeed} step="25" min={0} max={1000} />{movementSpeed}
+
 	<canvas bind:this={canvas} class="canvas-thing" />
 </main>
 
