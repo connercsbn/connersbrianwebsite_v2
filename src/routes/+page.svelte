@@ -4,7 +4,7 @@
 
 	const X = 0;
 	const Y = 1;
-	let innerWidth;
+	let innerWidth: number;
 	let canvas: HTMLCanvasElement;
 	let brian: HTMLImageElement;
 	let ctx: CanvasRenderingContext2D;
@@ -16,7 +16,7 @@
 	// roughly 1860 frames per bar
 	// 465 frames per beat if 10ms apart
 	let totalFrames = 185.9;
-	let lastLoop = undefined;
+	let lastLoop = new Date();
 	$: {
 		if (ctx) {
 			ctx.globalCompositeOperation = comp;
@@ -56,7 +56,9 @@
 	let compsValues = Object.values(comps);
 
 	onMount(() => {
-		ctx = canvas.getContext('2d');
+		let tempCtx = canvas.getContext('2d');
+		if (!tempCtx) return;
+		ctx = tempCtx;
 		ctx.imageSmoothingEnabled = true;
 		canvas.width = window?.innerWidth;
 		canvas.height = window?.innerHeight;
@@ -66,17 +68,17 @@
 	});
 
 	let frame = 0;
-	let startpoint = undefined;
+	let startpoint = [100, 100];
 	let endpoint = [0, 0];
 	let curr = [0, 0];
-	let fx = (thisFrame) => {
+	let fx = (thisFrame: number) => {
 		return startpoint[X] + (endpoint[X] - startpoint[X]) * (thisFrame / totalFrames);
 	};
-	let fy = (thisFrame) => {
+	let fy = (thisFrame: number) => {
 		return startpoint[Y] + (endpoint[Y] - startpoint[Y]) * (thisFrame / totalFrames);
 	};
 
-	let interval;
+	let interval: NodeJS.Timer | void;
 	let currBeat = 0;
 	let ranBeat = Math.ceil(Math.random() * 8);
 	let nextBeat = 0;
@@ -119,8 +121,8 @@
 			if (frame % totalFrames < 1) {
 				startpoint = endpoint;
 				// frame = 0;
-				interval = clearInterval(interval);
-				console.log('Last: ', Math.abs(lastLoop - (new Date() as any)));
+				interval = clearInterval(interval as NodeJS.Timer);
+				console.log('Last: ', Math.abs(lastLoop.getMilliseconds() - new Date().getMilliseconds()));
 				lastLoop = new Date();
 				loop();
 			}
@@ -128,12 +130,12 @@
 		}, 10);
 	}
 
-	function drawPath(x, y) {
+	function drawPath(x: number, y: number) {
 		ctx.beginPath();
 		ctx.arc(x, y, 5, 0, 2 * Math.PI);
 		ctx.stroke();
 	}
-	function draw(x, y) {
+	function draw(x: number, y: number) {
 		x = canvas.width - x;
 		y = canvas.height - y;
 		const regular_w = canvas.width * 0.1;
@@ -154,7 +156,7 @@
 			canvas.height = window?.innerHeight;
 		}
 	}
-	let introTimeOut;
+	let introTimeOut: NodeJS.Timer;
 	function handleBegin() {
 		music = new Audio('redboneedited.opus');
 		music.play();
