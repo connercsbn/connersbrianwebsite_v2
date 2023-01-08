@@ -56,6 +56,7 @@
 	let compsValues = Object.values(comps);
 
 	onMount(() => {
+		music = new Audio('redboneedited.opus');
 		let tempCtx = canvas.getContext('2d');
 		if (!tempCtx) return;
 		ctx = tempCtx;
@@ -158,7 +159,6 @@
 	}
 	let introTimeOut: NodeJS.Timer;
 	function handleBegin() {
-		music = new Audio('redboneedited.opus');
 		music.play();
 		hasBegun = true;
 		setTimeout(() => {
