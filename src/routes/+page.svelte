@@ -57,6 +57,7 @@
 
 	onMount(() => {
 		music = new Audio('redboneedited.opus');
+		console.log(JSON.stringify(music));
 		let tempCtx = canvas.getContext('2d');
 		if (!tempCtx) return;
 		ctx = tempCtx;
@@ -176,7 +177,7 @@
 <svelte:window bind:innerWidth />
 
 <main>
-	{#if !hasBegun}
+	{#if !hasBegun && music}
 		<div class="beginExperienceContainer">
 			<button class="beginExperience" on:click={handleBegin}>Begin experience</button>
 		</div>
