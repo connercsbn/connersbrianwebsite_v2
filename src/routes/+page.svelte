@@ -57,7 +57,7 @@
 
 	onMount(() => {
 		music = new Audio('redboneedited.opus');
-		console.log(JSON.stringify(music));
+		console.log(music);
 		let tempCtx = canvas.getContext('2d');
 		if (!tempCtx) return;
 		ctx = tempCtx;
@@ -160,11 +160,13 @@
 	}
 	let introTimeOut: NodeJS.Timer;
 	function handleBegin() {
-		music.play();
-		hasBegun = true;
-		setTimeout(() => {
-			loop();
-		}, introLength);
+		music.play().then(() => {
+			hasBegun = true;
+			setTimeout(() => {
+				console.log(music.readyState);
+				loop();
+			}, introLength);
+		});
 		// wait until music is at a certain point, then loop.
 	}
 	function handleExit() {
@@ -178,6 +180,7 @@
 
 <main>
 	{#if !hasBegun && music}
+		<div>{music.readyState}</div>
 		<div class="beginExperienceContainer">
 			<button class="beginExperience" on:click={handleBegin}>Begin experience</button>
 		</div>
