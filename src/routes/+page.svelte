@@ -179,8 +179,7 @@
 <svelte:window bind:innerWidth />
 
 <main>
-	{#if !hasBegun && music}
-		<div>{music.readyState}</div>
+	{#if !hasBegun}
 		<div class="beginExperienceContainer">
 			<button class="beginExperience" on:click={handleBegin}>Begin experience</button>
 		</div>
